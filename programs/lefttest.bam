@@ -1,0 +1,33 @@
+# BAMScript - Bad Assed Machines v1
+# Attempt at a solution
+
+-- BEGIN PRIVATE --
+0:  # netural state
+    ^.*-RHG       1
+    ^.*-1         1
+
+1:
+    1-1           9
+
+
+    
+-- BEGIN GENERAL --
+
+# This code works for both ends (interleaved code)
+0:
+    ^.*--2     RHG
+
+
+
+RHG:
+    # Right hand general
+    1-.*           6
+    ^[LRM]HG--2    -1  # FIRE!
+
+
+LHG:
+    # Left hand general
+    ^-2-[LRM]HG    -1  # FIRE!
+
+
+    

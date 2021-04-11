@@ -1,0 +1,41 @@
+# BAMScript - Bad Assed Machines v1
+# Bounce signals
+
+
+-- BEGIN PRIVATE --
+
+0:  # netural state
+    [13]-0      1      # left pulse
+    0-[23]      2      # right pulse
+    [13]-[23]   3      # colliding pulses
+
+1:  # Fast pulse, from left to Right
+    [13]-0      1      # left pulse
+    [13]-[23]   3      # colliding pulses
+    0-[23]      2      # right pulse
+    .*          0      # Anything else, (i.e. 0-0), back to neutral
+
+2:  # Fast Pulse, from right to left
+    [13]-0      1      # left pulse
+    [13]-[23]   3      # colliding pulses
+    0-[23]      2      # right pulse
+    .*          0      # Anything else, (i.e. 0-0), back to neutral
+
+3:  # Fast pulse - crossing over both ways
+    [13]-0      1      # left pulse
+    [13]-[23]   3      # colliding pulses
+    0-[23]      2      # right pulse
+    .*          0      # Anything else, (i.e. 0-0), back to neutral
+
+
+-- BEGIN GENERAL --
+# This code works for both ends (interleaved code)
+0:
+    1--2    2   # Right hand go to 2 - i.e. bounce!
+    -2-2    1   # left hand go to 1 - i.e. bounce
+    
+1:              # Triggered by kickoff routine or bounce
+    .*      0
+
+2:                 # Bounce and return to 0
+    .*      0

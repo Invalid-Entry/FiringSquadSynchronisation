@@ -1,0 +1,51 @@
+# BAMScript - Bad Assed Machines v1
+# Midfinder demonstration
+
+
+-- BEGIN PRIVATE --
+
+0:  # netural state
+    1-0      1      # left pulse
+
+1:  # Fast pulse, from left to Right
+    4-1      2       # Trigger a slow pulse
+    [234]-5  -1     
+    .*-5     5      # Fast pulse coming back (no collide)
+
+2:  # Slow Delay 1
+    .*-5    -1
+    .*      3
+
+3:  # Slow Delay 2
+    .*-5    -1
+    .*      4
+
+4:  # Slow Delay final and Triggere
+    .*-5    -1
+    .*  0   # reset for cleanness 
+
+5:  # Fast pulse coming back
+    .*  0   # Reset just for clanness
+
+-1:
+    .*      BANG       # Found middle
+
+
+
+-- BEGIN GENERAL --
+# This code works for both ends (interleaved code)
+0:
+    1--2    5   # Right hand go to 2 - i.e. bounce!
+    
+1:              # Triggered by kickoff routine or bounce
+    .*      2
+
+2:
+    .*      3
+3:
+    .*      4
+4:
+    .*      0
+
+5:                 # Bounce and return to 0
+    .*      0

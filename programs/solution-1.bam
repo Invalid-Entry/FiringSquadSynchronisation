@@ -1,0 +1,87 @@
+# BAMScript - Bad Assed Machines v1
+# Attempt at a solution
+
+-- BEGIN PRIVATE --
+0:  # netural state
+    #1-\d+     2   # Left hand is general on trigger state Go to 4
+    ^[14]-(\d+|RHG)   4   # Fast pulse, flip to 4
+    ^3-\d+      9   # left hand is a slow pulse, go to 1 to slow pulse
+
+9: 
+    ^\d+-\d+     2   # start counting
+    ^[LR]HG-[LR]HG$ LHG
+    ^LHG-.*$     2
+2: 
+    ^\d+-\d+     3   # start counting
+    ^LHG-\d+     3
+3:  # Slow pulse state
+    #\d+-\d+   0   # start counting
+    ^.*-14$     RHG # hit the fast pulse
+    .*-RHG$    15
+    ^.*-15$     15 # Fast pulse
+
+4:  # Fast pulse state
+    #\d+-\d+  2   # jump to slow pulse
+
+    ^3-14     RHG  # - Special case! - FIXME not sure here
+    ^(3|LHG)-\d+     9   # Righthand is Slow pulse
+
+    ^\d+-14      14  # 
+
+14: # fast pulse left state
+    ^3-.*       LHG # hit a 3 - now a LHG
+    ^14-RHG     RHG # Edge case
+    ^4-.*       4    # Fast pulse become a 4
+    ^LHG-.*     4   # start a pulse sequence to the right
+
+15:    # Fast pulse left that isnt 14
+    ^4-.*       4
+    ^16-.*       4
+    
+RHG:
+    # Right hand sub general
+    [LR]HG-[LR]HG   -1  # surrounded - everyone fires next turn
+    ^4-.*           14
+LHG:  
+    # Left hand sub general
+    [LR]HG-[LR]HG   -1  # surrounded - everyone fires next turn
+    ^15-.*          4
+    
+-- BEGIN GENERAL --
+
+# This code works for both ends (interleaved code)
+0:
+    ^0--2         RHG   # RHG Right hand general!   
+    ^LHG--2      RHG
+    ^-2-1        0   # left hand go to 0
+    ^trigger     1   # fake to make graph show right
+    
+1:                  # Triggered by kickoff routine
+    ^-2-\d+      2   # left hand count up 1
+
+2:
+    ^-2-\d+      3   # # left hand count up 1
+
+3:  # Post triggered state
+    ^-2-\d+      LHG   # Now be a left hand general
+
+14: # left moving fast
+    .*          RHG   # Back to RHG
+
+16:
+    .*          LHG
+
+RHG:
+    # Right hand general
+    ^[LR]HG--2    -1  # FIRE!
+    # Bounce a fast
+    ^4--2        14  # Left moving fast
+
+
+LHG:
+    # Left hand general
+    ^-2-[LR]HG    -1  # FIRE!
+    ^.*-15$       16  # bounce
+    
+
+    

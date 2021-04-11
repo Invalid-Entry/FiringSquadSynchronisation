@@ -1,0 +1,92 @@
+# BAMScript - Bad Assed Machines v1
+# Attempt at a solution 
+# Works up to midpoint detection on odd/even combos but goes a bit after that
+# see FIXMEs
+
+-- BEGIN PRIVATE --
+0:  # netural state
+    ^1-.*       1
+    ^3-\d+      3 # left hand is a slow pulse, go to 1 to slow pulse
+    8-.*        1
+    .*-9        0 # FIXME
+1:  
+    (4|[LM]HG)-.*        2   # slow right step
+    .*-[56]     5   # Fast back
+2:
+    .*-5        7
+    .*          3   # slow right delay
+3:
+    .*-5        7
+    .*          4   # slow right delay 2
+    
+4: # Slow forward hold
+    .*-5        7   # bouncing wave # FIXME?
+    .*          0
+    
+
+5: # Fast back hold
+    2-*         8
+    4-*         8     # Become a midpoint general
+    ^5-*         0
+    LHG-.*      1
+
+6:
+    # RHG Bounce
+    .*          RHG
+
+# these three states may not be a good move
+# Here to trigger the bounces
+7:
+    # R Temp
+    .*  RHG
+8:
+    # L Temp
+    .*  LHG
+
+    
+RHG:
+    # Right hand sub general
+    [LR]HG-[LR]HG   -1  # surrounded - everyone fires next turn
+    1-.*        6
+    #0-LHG       7
+    
+LHG:  
+    # Left hand sub general
+    [LR]HG-[LR]HG   -1  # surrounded - everyone fires next turn
+    #RHG-0             8  # FIXME this fliplflops
+
+-1:
+    .*  BANG
+
+    
+-- BEGIN GENERAL --
+
+# This code works for both ends (interleaved code)
+0:
+    ^.*--2     RHG
+    ^trigger    1         # fake to make graph show right
+    
+1:                        # Triggered by kickoff routine
+    ^-2-\d+     2         # left hand count up 1
+2:
+    .*          3
+3:
+    .*          4
+4:  
+    .*          LHG
+
+6: # RHG Bounce
+    .*          RHG
+
+RHG:
+    # Right hand general
+    1-.*           6
+    ^[LRM]HG--2    -1  # FIRE!
+
+
+LHG:
+    # Left hand general
+    ^-2-[LRM]HG    -1  # FIRE!
+
+-1:
+    .*  BANG

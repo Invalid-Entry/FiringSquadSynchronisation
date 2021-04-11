@@ -1,0 +1,19 @@
+# BAMScript - Bad Assed Machines v1
+# Pass a signal (1)
+
+-- BEGIN PRIVATE --
+0:  # netural state
+    1-\d+   1       # If left hand side is 1, go to delay sequence
+
+1:  # Trigger to the Right, but return to 0 no matter what
+    .*      0
+
+
+
+-- BEGIN GENERAL --
+# This code works for both ends (interleaved code)
+0:
+    1--2    1   # Right hand go to 1
+    -2-1    0   # left hand go to 0
+    
+1:              # Triggered by kickoff routine

@@ -1,0 +1,78 @@
+# BAMScript - Bad Assed Machines v1
+# Attempt at a solution
+
+-- BEGIN PRIVATE --
+0:  # netural state
+    ^1-.*       1
+    ^3-\d+      3# left hand is a slow pulse, go to 1 to slow pulse
+
+1:  
+    4-.*        2   # slow right step
+    .*-[56]     5   # Fast back
+2:
+    .*-5        RHG
+    .*          3   # slow right delay
+3:
+    #.*-5        RHG
+    .*          4   # slow right delay 2
+    
+4: # Slow forward hold
+    #.*-5        MHG   # bouncing wave
+    .*          0
+    
+
+5: # Fast back hold
+    2-*         LHG
+    4-*         MHG     # Become a midpoint general
+    ^5-*         0
+    MHG-.*      1
+
+6:
+    # RHG Bounce
+    .*          RHG
+    
+RHG:
+    # Right hand sub general
+    [LRM]HG-[LRM]HG   -1  # surrounded - everyone fires next turn
+    1-.*        6
+    
+    
+LHG:  
+    # Left hand sub general
+    [LRM]HG-[LRM]HG   -1  # surrounded - everyone fires next turn
+
+MHG:
+    [LRM]HG-[LRM]HG   -1  # surrounded - everyone fires next turn
+    
+-- BEGIN GENERAL --
+
+# This code works for both ends (interleaved code)
+0:
+    ^.*--2     RHG
+    ^trigger    1   # fake to make graph show right
+    
+1:                  # Triggered by kickoff routine
+    ^-2-\d+     2   # left hand count up 1
+2:
+    .*          3
+3:
+    .*          4
+4:  
+    .*          LHG
+
+6: # RHG Bounce
+    .*          RHG
+
+
+RHG:
+    # Right hand general
+    1-.*           6
+    ^[LRM]HG--2    -1  # FIRE!
+
+
+LHG:
+    # Left hand general
+    ^-2-[LRM]HG    -1  # FIRE!
+
+
+    

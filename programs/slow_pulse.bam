@@ -1,0 +1,30 @@
+# BAMScript - Bad Assed Machines v1
+# A sequence of 1s pass across
+
+-- BEGIN PRIVATE --
+0:  # netural state
+    3-\d+   1   # if the left hand machine is 2, go to 1
+1: 
+    \d+-\d+   2   # start counting
+2: 
+    \d+-\d+   3   # start counting
+3: 
+    \d+-\d+   0   # start counting
+
+    
+-- BEGIN GENERAL --
+# This code works for both ends (interleaved code)
+0:
+    3--2    2   # Right hand go to 2
+    -2-1    0   # left hand go to 0
+    
+1:              # Triggered by kickoff routine
+    0--2    0   # right hand go to 0
+    -2-0    3   # left hand 
+
+2: # right hand bounce?
+    \d+--2  0   # Reset to 0
+
+3:  # Post triggered state
+    -2-\d+  0   # go back to 0
+    
